@@ -30,6 +30,20 @@
  * ==========================================================
  * 插件指令
  * ==========================================================
+ * 功能：快捷添加默认样式的箭头，指向事件或位置
+ * 插件指令：
+ * >地图箭头 : 快捷添加 : 事件[15]
+ * >地图箭头 : 快捷添加 : 位置[15,16]
+ * >地图箭头 : 快捷添加 : 事件[15] : 地图[2]
+ * >地图箭头 : 快捷添加 : 位置[15,16] : 地图[2]
+ * 说明：
+ * 这是添加箭头指令的简化版，省略了名称和样式名，尽量简化参数，方便
+ * 快速上手。
+ * ----------------------------------------------------------
+ * 功能：清除所有快捷添加的箭头
+ * 插件指令：
+ * >地图箭头 : 清除快捷箭头
+ * ----------------------------------------------------------
  * 功能：在本地图添加箭头，指向事件或位置，可以用常量或变量指定
  * 插件指令：
  * >地图箭头 : 添加箭头 : 名称 : 样式名 : 事件[15]
@@ -44,7 +58,8 @@
  * 5.添加的箭头仅在当前地图生效，重新进入地图仍然生效。
  * 6.变量[15]取的是当前的变量值，后续不会跟随变量变化。
  * 举例：
- * >地图箭头 : 添加箭头 : 测试箭头 : 默认样式 : 事件[15]
+ * 添加一个箭头，名叫“张三”，样式是“默认样式”，指向本地图15号事件。
+ * >地图箭头 : 添加箭头 : 张三 : 默认样式 : 事件[15]
  * ----------------------------------------------------------
  * 功能：在指定地图添加箭头，指向事件
  * 插件指令：
@@ -52,6 +67,10 @@
  * >地图箭头 : 添加箭头 : 名称 : 样式名 : 事件[15] : 地图变量[1]
  * 说明：
  * 在上一种指令基础上，可以指定生效的地图编号。
+ * 举例：
+ * 添加一个箭头，名叫“张三”，样式是“默认样式”，它的目标是2号地图的
+ * 某个事件。至于是哪个事件，要看5号变量当前值是什么。
+ * >地图箭头 : 添加箭头 : 张三 : 默认样式 : 事件变量[5] : 地图[2]
  * ----------------------------------------------------------
  * 功能：按名称移除箭头
  * 插件指令：
@@ -63,30 +82,84 @@
  * 插件指令：
  * >地图箭头 : 按样式清除箭头 : 样式名
  * 说明：
- * 移除每一个指定样式的箭头。
+ * 在所有箭头中找出每个指定样式的箭头，进行移除。
+ * ----------------------------------------------------------
+ * 功能：按关键词清除箭头
+ * 插件指令：
+ * >地图箭头 : 按关键词清除箭头 : 关键词
+ * 说明：
+ * 在所有箭头中找出每个名称包含指定关键词的箭头，进行移除。
+ * ----------------------------------------------------------
+ * 功能：清除全部箭头
+ * 插件指令：
+ * >地图箭头 : 清除全部箭头
+ * 说明：
+ * 清除所有箭头，一个也不剩。
  * ==========================================================
  * 脚本
  * ==========================================================
- * 功能：根据样式名称添加箭头
+ * 功能：快捷添加箭头，指向事件
+ * 脚本：
+ * Kgg_MapArrows.addArrowToEventFast(eventId, mapId)
+ * 参数：
+ * {Number} eventId 箭头指向的地图X坐标
+ * {Number} mapId 生效的地图ID 若不填则默认当前地图
+ * ----------------------------------------------------------
+ * 功能：快捷添加箭头，指向位置
+ * 脚本：
+ * Kgg_MapArrows.addArrowToLocationFast(mapX, mapY, mapId)
+ * 参数：
+ * {Number} mapX 箭头指向的地图X坐标
+ * {Number} mapY 箭头指向的地图Y坐标
+ * {Number} mapId 生效的地图ID 若不填则默认当前地图
+ * ----------------------------------------------------------
+ * 功能：清除所有快捷添加的箭头
+ * 脚本：
+ * Kgg_MapArrows.clearFastArrows();
+ * ----------------------------------------------------------
+ * 功能：添加指向指定事件的箭头
  * 描述：
  * 使用设置好的样式，添加指向特定ID的事件的箭头，仅生效于一张地图。
  * 请在开始游戏后调用，勿在主菜单调用。
  * 脚本：
- * Kgg_MapArrows.addArrow(name, arrowStyleName, eventId, mapId)
+ * Kgg_MapArrows.addArrowToEvent(name, arrowStyleName, eventId, mapId)
  * 参数：
  * {String} name 新建箭头名称 用于移除箭头
  * {String} arrowStyleName 箭头样式名称
  * {Number} eventId 箭头指向的事件ID
  * {Number} mapId 生效的地图ID 若不填则默认当前地图
  * ----------------------------------------------------------
+ * 功能：添加指向指定位置的箭头
+ * 描述：
+ * 使用设置好的样式，添加指向特定位置的箭头，仅生效于一张地图。
+ * 请在开始游戏后调用，勿在主菜单调用。
+ * 脚本：
+ * Kgg_MapArrows.addArrowToLocation(name, arrowStyleName, mapX, mapY, mapId)
+ * 参数：
+ * {String} name 新建箭头名称 用于移除箭头
+ * {String} arrowStyleName 箭头样式名称
+ * {Number} mapX 箭头指向的地图X坐标
+ * {Number} mapY 箭头指向的地图Y坐标
+ * {Number} mapId 生效的地图ID 若不填则默认当前地图
+ * ----------------------------------------------------------
  * 功能：根据箭头名称移除箭头
  * 脚本：
  * Kgg_MapArrows.removeArrow(name)
  * ----------------------------------------------------------
- * 功能：根据样式名称移除箭头
+ * 功能：根据样式名称清除箭头
  * 描述：一次性移除所有指定样式的箭头。
  * 脚本：
  * Kgg_MapArrows.clearArrowsByArrowStyle(arrowStyleName)
+ * ----------------------------------------------------------
+ * 功能：根据关键词清除箭头
+ * 描述：一次性移除所有名称含有关键词的箭头。
+ * 脚本：
+ * Kgg_MapArrows.clearArrowsByKeyword(keyword)
+ * ----------------------------------------------------------
+ * 功能：清除全部箭头
+ * 描述：一次性移除所有箭头。
+ * 脚本：
+ * Kgg_MapArrows.clearAllArrows()
  * ==========================================================
  * 其他信息
  * ==========================================================
@@ -102,12 +175,24 @@
  * 对象名都有前缀“_kgg_MapArrows”。
  * ==========================================================
  * 
+ * @param 调试设置
+ * @default
+ * 
  * @param 显示边界线
+ * @parent 调试设置
  * @type boolean
  * @on 显示
  * @off 关闭
- * @desc 添加箭头时，同时显示箭头样式的边界线，包括上界、下界、左界、右界。建议仅调试时开启。
+ * @desc 添加箭头时，同时显示箭头样式的边界线。建议仅调试时开启。
  * @default false
+ * 
+ * @param 快捷添加设置
+ * @default
+ * 
+ * @param 快捷添加默认样式
+ * @parent 快捷添加设置
+ * @desc 选择某个样式作为快捷添加的默认样式。填写样式编号（整数）。
+ * @default 1
  * 
  * @param 箭头样式设置
  * @default
@@ -296,7 +381,7 @@
  * @param 起点设置
  * @default
  * 
- * @param 起点类型
+ * @param 起点类型(StartingPointType)
  * @parent 起点设置
  * @type select
  * @option 边框中心(border_center)
@@ -307,17 +392,17 @@
  * @value player_screen_position
  * @option 左上角(top_left)
  * @value top_left
- * @desc 选择箭头方向的起点的位置。选择“边框中心”或“画面中心”将无视下面设置的XY坐标。
+ * @desc 选择箭头方向的起点的位置。只有选择“左上角”时，下面设置的XY坐标才会生效。
  * @default screen_center
  * 
  * @param 起点X
  * @parent 起点设置
- * @desc 起点与屏幕左上角的X轴距离。若0-1之间为比例，大于1则为像素数。起点类型选择“左上角”时才生效。
+ * @desc 起点与屏幕左上角的X方向距离。若0-1之间为比例，大于1则为像素数。起点类型选择“左上角”时才生效。
  * @default 0.5
  * 
  * @param 起点Y
  * @parent 起点设置
- * @desc 起点与屏幕左上角的Y轴距离。若0-1之间为比例，大于1则为像素数。起点类型选择“左上角”时才生效。
+ * @desc 起点与屏幕左上角的Y方向距离。若0-1之间为比例，大于1则为像素数。起点类型选择“左上角”时才生效。
  * @default 0.5
  * 
  * 
@@ -382,7 +467,7 @@
  * 
  * @param 箭头与事件最近距离
  * @parent 渐变与距离设置
- * @desc 箭头会被目标事件挤开一定距离。填写像素数。
+ * @desc 箭头会被目标事件（或目标位置）挤开一定距离。填写像素数。
  * @default 30
  *
  */
@@ -428,6 +513,13 @@ Kgg_MapArrows.StartingPointType = {
     SCREEN_CENTER: "screen_center", // 屏幕中心
     PLAYER_SCREEN_POSITION: "player_screen_position", // 玩家位置
     TOP_LEFT: "top_left"            // 左上角
+};
+
+// 目标类型的枚举
+Kgg_MapArrows.TargetType = {
+    EVENT_ID: "event_id", // 边框中心
+    MAP_POINT: "map_point", // 屏幕中心
+    SCREEN_POINT: "screen_point" // 玩家位置
 };
 
 /**
@@ -480,13 +572,13 @@ Kgg_MapArrows.Target = function () {
 // 当前屏幕坐标x
 Kgg_MapArrows.Target.prototype.x = function () {
     switch (this.type) {
-        case "EventId":
+        case Kgg_MapArrows.TargetType.EVENT_ID:
             return $gameMap.event(this.eventId).screenX();
-        case "MapPoint": // 照抄Game_CharacterBase.prototype.screenX
+        case Kgg_MapArrows.TargetType.MAP_POINT: // 照抄Game_CharacterBase.prototype.screenX
             var tw = $gameMap.tileWidth();
             var scrolledX = $gameMap.adjustX(this._mapX);
             return Math.round(scrolledX * tw + tw / 2);
-        case "ScreenPoint":
+        case Kgg_MapArrows.TargetType.SCREEN_POINT:
             return this._screenX;
         default:
             return;
@@ -495,13 +587,13 @@ Kgg_MapArrows.Target.prototype.x = function () {
 // 当前屏幕坐标y
 Kgg_MapArrows.Target.prototype.y = function () {
     switch (this.type) {
-        case "EventId":
+        case Kgg_MapArrows.TargetType.EVENT_ID:
             return Kgg_MapArrows.Screen.correctedTargetY($gameMap.event(this.eventId).screenY());
-        case "MapPoint":
+        case Kgg_MapArrows.TargetType.MAP_POINT:
             var th = $gameMap.tileHeight();
             var scrolledY = $gameMap.adjustY(this._mapY);
             return Math.round(scrolledY * th + th / 2);
-        case "ScreenPoint":
+        case Kgg_MapArrows.TargetType.SCREEN_POINT:
             return this._screenY;
         default:
             return;
@@ -509,20 +601,20 @@ Kgg_MapArrows.Target.prototype.y = function () {
 };
 // 初始化：指定ID的事件
 Kgg_MapArrows.Target.prototype.initEventId = function (mapId, eventId) {
-    this.type = "EventId";
+    this.type = Kgg_MapArrows.TargetType.EVENT_ID;
     this.mapId = mapId;
     this.eventId = eventId;
 };
 // 初始化：地图固定位置
 Kgg_MapArrows.Target.prototype.initMapPoint = function (mapId, x, y) {
-    this.type = "MapPoint";
+    this.type = Kgg_MapArrows.TargetType.MAP_POINT;
     this.mapId = mapId;
     this._mapX = x;
     this._mapY = y;
 };
 // 初始化：屏幕固定位置
 Kgg_MapArrows.Target.prototype.initScreenPoint = function (mapId, x, y) {
-    this.type = "ScreenPoint";
+    this.type = Kgg_MapArrows.TargetType.SCREEN_POINT;
     this.mapId = mapId;
     this._screenX = x;
     this._screenY = y;
@@ -612,6 +704,26 @@ Kgg_MapArrows.addArrowToEvent = function (name, arrowStyleName, eventId, mapId) 
 };
 
 /**
+ * 快捷添加箭头，目标为事件
+ * 添加指向特定事件的箭头，仅生效于一张地图。
+ * @param {Number} eventId 箭头指向的地图X坐标
+ * @param {Number} mapId 生效的地图ID 若不填则默认当前地图
+ */
+Kgg_MapArrows.addArrowToEventFast = function (eventId, mapId) {
+    mapId = mapId || $gameMap.mapId(); // 默认取当前地图编号
+    // 自动生成名称
+    var name = Kgg_MapArrows.FastAdd.FAST_ADD_NAME_PREFIX;
+    var ordinal = 0;
+    while (Kgg_MapArrows.arrowExist(name + ordinal.toString())) {
+        ordinal += 1;
+    }
+    name = name + ordinal.toString();
+    // 选择默认箭头
+    var arrowStyle = Kgg_MapArrows.arrowStyleList[Kgg_MapArrows.FastAdd.defaultStyleOrdinal - 1];
+    return Kgg_MapArrows.addArrowToEvent(name, arrowStyle.name, eventId, mapId);
+};
+
+/**
  * 添加箭头，目标为位置
  * 添加指向特定地图坐标的箭头，仅生效于一张地图。
  * @param {String} name 新建箭头名称 用于移除箭头
@@ -626,6 +738,27 @@ Kgg_MapArrows.addArrowToLocation = function (name, arrowStyleName, mapX, mapY, m
     var target = new Kgg_MapArrows.Target();
     target.initMapPoint(mapId, mapX, mapY);
     return Kgg_MapArrows.addArrow(name, arrowStyleName, target);
+};
+
+/**
+ * 快捷添加箭头，目标为位置
+ * 添加指向特定地图坐标的箭头，仅生效于一张地图。
+ * @param {Number} mapX 箭头指向的地图X坐标
+ * @param {Number} mapY 箭头指向的地图Y坐标
+ * @param {Number} mapId 生效的地图ID 若不填则默认当前地图
+ */
+Kgg_MapArrows.addArrowToLocationFast = function (mapX, mapY, mapId) {
+    mapId = mapId || $gameMap.mapId(); // 默认取当前地图编号
+    // 自动生成名称
+    var name = Kgg_MapArrows.FastAdd.FAST_ADD_NAME_PREFIX;
+    var ordinal = 0;
+    while (Kgg_MapArrows.arrowExist(name + ordinal.toString())) {
+        ordinal += 1;
+    }
+    name = name + ordinal.toString();
+    // 选择默认箭头
+    var arrowStyle = Kgg_MapArrows.arrowStyleList[Kgg_MapArrows.FastAdd.defaultStyleOrdinal - 1];
+    return Kgg_MapArrows.addArrowToLocation(name, arrowStyle.name, mapX, mapY, mapId);
 };
 
 /**
@@ -696,7 +829,7 @@ Kgg_MapArrows.removeArrow = function (name) {
  * @param {String} arrowStyleName 样式名称
  */
 Kgg_MapArrows.clearArrowsByArrowStyle = function (arrowStyleName) {
-    if (!$gameSystem._kgg_MapArrows_arrowMap) return;   // 检查存放
+    if (!$gameSystem._kgg_MapArrows_arrowMap) return;   // 检查保存的箭头所在容器是否存在
     var removingArrowNames = [];
     Object.keys($gameSystem._kgg_MapArrows_arrowMap).forEach(name => {
         if ($gameSystem._kgg_MapArrows_arrowMap[name].arrowStyleName == arrowStyleName) {
@@ -707,17 +840,57 @@ Kgg_MapArrows.clearArrowsByArrowStyle = function (arrowStyleName) {
         Kgg_MapArrows.removeArrow(name);
     });
 };
+
+/**
+ * 清除名称含有指定关键词的箭头
+ * @param {String} keyword 关键词
+ */
+Kgg_MapArrows.clearArrowsByKeyword = function (keyword) {
+    if (!$gameSystem._kgg_MapArrows_arrowMap) return;   // 检查保存的箭头所在容器是否存在
+    var removingArrowNames = [];
+    Object.keys($gameSystem._kgg_MapArrows_arrowMap).forEach(name => {
+        if (name.indexOf(keyword) != -1) {
+            removingArrowNames.push(name);
+        }
+    });
+    removingArrowNames.forEach(name => {
+        Kgg_MapArrows.removeArrow(name);
+    });
+};
+
+/**
+ * 清除所有快捷添加的箭头
+ */
+Kgg_MapArrows.clearFastArrows = function () {
+    return Kgg_MapArrows.clearArrowsByKeyword(Kgg_MapArrows.FastAdd.FAST_ADD_NAME_PREFIX);
+};
+
+/**
+ * 清除所有箭头
+ */
+Kgg_MapArrows.clearAllArrows = function () {
+    if (!$gameSystem._kgg_MapArrows_arrowMap) return;   // 检查保存的箭头所在容器是否存在
+    var removingArrowNames = [];
+    Object.keys($gameSystem._kgg_MapArrows_arrowMap).forEach(name => {
+        removingArrowNames.push(name);
+    });
+    removingArrowNames.forEach(name => {
+        Kgg_MapArrows.removeArrow(name);
+    });
+};
+
 // =================================================================
 // 起点相关处理
 // =================================================================
 
 Kgg_MapArrows.StartingPoint = {};
+// Kgg：20231119 取消全局的起点设置，改为每个arrowStyle有自己的起点设置。
 // 起点类型
 // 起点一般是屏幕画面中心，也可能是玩家所在位置
-Kgg_MapArrows.StartingPoint.type = Kgg_MapArrows.StartingPointType.SCREEN_CENTER;
+// Kgg_MapArrows.StartingPoint.type = Kgg_MapArrows.StartingPointType.SCREEN_CENTER;
 // 起点与屏幕左上角的距离。若在0-1之间则为比例，若大于1则视为像素数。只有起点类型选择“左上角”时才会生效。
-Kgg_MapArrows.StartingPoint.x = 0.5;
-Kgg_MapArrows.StartingPoint.y = 0.5;
+// Kgg_MapArrows.StartingPoint.x = 0.5;
+// Kgg_MapArrows.StartingPoint.y = 0.5;
 
 /**
  * 获取起点在屏幕上的位置
@@ -725,7 +898,7 @@ Kgg_MapArrows.StartingPoint.y = 0.5;
  * @returns 起点在屏幕上的位置
  */
 Kgg_MapArrows.StartingPoint.screenPoint = function (arrowStyle) {
-    switch (Kgg_MapArrows.StartingPoint.type) {
+    switch (arrowStyle.startingPointType) {
         case Kgg_MapArrows.StartingPointType.BORDER_CENTER: // 边界中心
             if (arrowStyle.borderType == Kgg_MapArrows.BorderType.ELLIPSE) {
                 return {    // 椭圆中心
@@ -742,13 +915,17 @@ Kgg_MapArrows.StartingPoint.screenPoint = function (arrowStyle) {
             return { x: Graphics.width / 2, y: Graphics.height / 2 };
         case Kgg_MapArrows.StartingPointType.PLAYER_SCREEN_POSITION: // 玩家位置
             if (!!$gamePlayer) {
-                return { x: $gamePlayer.screenX(), y: $gamePlayer.screenY() };
+                return { 
+                    x: $gamePlayer.screenX(), 
+                    y: Kgg_MapArrows.Screen.correctedTargetY($gamePlayer.screenY())
+                };
             }
         // 注意，这里不break。如果$gamePlayer不存在，就继续往下运行，取左上角像素位置。
         case Kgg_MapArrows.StartingPointType.TOP_LEFT:
         default:
-            var x = (this.x > 0 && this.x < 1) ? Graphics.width * this.x : this.x;
-            var y = (this.y > 0 && this.y < 1) ? Graphics.height * this.y : this.y;
+            var x = arrowStyle.startingPoint.x, y = arrowStyle.startingPoint.y;
+            x = (this.x > 0 && this.x < 1) ? Graphics.width * this.x : this.x;
+            y = (this.y > 0 && this.y < 1) ? Graphics.height * this.y : this.y;
             return { x: x, y: y }; // 以左上角为原点的像素位置
     }
 };
@@ -1309,13 +1486,32 @@ Kgg_MapArrows.Caculation.getAngle = function (x1, y1, x2, y2) {
 };
 
 // =================================================================
+// 快捷添加相关
+// =================================================================
+Kgg_MapArrows.FastAdd = {};
+Kgg_MapArrows.FastAdd.defaultStyleOrdinal = 1;
+Kgg_MapArrows.FastAdd.FAST_ADD_NAME_PREFIX = "fast_arrow_";    // 快捷添加箭头名称前缀
+
+// =================================================================
 // 插件指令相关
 // 负责与Game_Interpreter交互
 // =================================================================
 /*
  * 插件指令格式：
  * ----------------------------------------------------------
- * 用法
+ * 功能：快捷添加默认样式的箭头，指向事件或位置
+ * 插件指令：
+ * >地图箭头 : 快捷添加 : 事件[15]
+ * >地图箭头 : 快捷添加 : 位置[15,16]
+ * >地图箭头 : 快捷添加 : 事件[15] : 地图[2]
+ * >地图箭头 : 快捷添加 : 位置[15,16] : 地图[2]
+ * 说明：
+ * 这是添加箭头指令的简化版，省略了名称和样式名，尽量简化参数，方便
+ * 快速上手。
+ * ----------------------------------------------------------
+ * 功能：清除所有快捷添加的箭头
+ * 插件指令：
+ * >地图箭头 : 清除快捷箭头
  * ----------------------------------------------------------
  * 功能：在本地图添加箭头，指向事件或位置，可以用常量或变量指定
  * 插件指令：
@@ -1329,8 +1525,10 @@ Kgg_MapArrows.Caculation.getAngle = function (x1, y1, x2, y2) {
  * 3.事件变量[15]代表箭头目标是“编号为第15号变量的值的事件”。
  * 4.位置[15,16]代表地图中x为15，y为16的格子。
  * 5.添加的箭头仅在当前地图生效，重新进入地图仍然生效。
+ * 6.变量[15]取的是当前的变量值，后续不会跟随变量变化。
  * 举例：
- * >地图箭头 : 添加箭头 : MyArrow1 : 默认样式 : 事件[15]
+ * 添加一个箭头，名叫“张三”，样式是“默认样式”，指向本地图15号事件。
+ * >地图箭头 : 添加箭头 : 张三 : 默认样式 : 事件[15]
  * ----------------------------------------------------------
  * 功能：在指定地图添加箭头，指向事件
  * 插件指令：
@@ -1338,19 +1536,117 @@ Kgg_MapArrows.Caculation.getAngle = function (x1, y1, x2, y2) {
  * >地图箭头 : 添加箭头 : 名称 : 样式名 : 事件[15] : 地图变量[1]
  * 说明：
  * 在上一种指令基础上，可以指定生效的地图编号。
+ * 举例：
+ * 添加一个箭头，名叫“张三”，样式是“默认样式”，它的目标是2号地图的
+ * 某个事件。至于是哪个事件，要看5号变量当前值是什么。
+ * >地图箭头 : 添加箭头 : 张三 : 默认样式 : 事件变量[5] : 地图[2]
  * ----------------------------------------------------------
  * 功能：按名称移除箭头
  * 插件指令：
  * >地图箭头 : 移除箭头 : 名称
+ * 说明：
+ * 移除指定名称的箭头。
  * ----------------------------------------------------------
  * 功能：按样式清除箭头
  * 插件指令：
  * >地图箭头 : 按样式清除箭头 : 样式名
  * 说明：
- * 移除每一个指定样式的箭头。
+ * 在所有箭头中找出每个指定样式的箭头，进行移除。
+ * ----------------------------------------------------------
+ * 功能：按关键词清除箭头
+ * 插件指令：
+ * >地图箭头 : 按关键词清除箭头 : 关键词
+ * 说明：
+ * 在所有箭头中找出每个名称包含指定关键词的箭头，进行移除。
+ * ----------------------------------------------------------
+ * 功能：清除全部箭头
+ * 插件指令：
+ * >地图箭头 : 清除全部箭头
+ * 说明：
+ * 清除所有箭头，一个也不剩。
  * =================================================================
  */
 Kgg_MapArrows.Interpreter = {};
+
+/**
+ * 指定目标类型 参数的处理
+ * @param {String} unit 指定目标的参数
+ * @returns 目标类型
+ */
+Kgg_MapArrows.Interpreter.targetType = function (unit) {
+    if (unit.indexOf("事件") != -1) {
+        return Kgg_MapArrows.TargetType.EVENT_ID;
+    } else if (unit.indexOf("位置") != -1) {
+        return Kgg_MapArrows.TargetType.MAP_POINT;
+    } else if (unit.indexOf("屏幕") != -1) {
+        return Kgg_MapArrows.TargetType.SCREEN_POINT;
+    }
+    return;
+};
+
+/**
+ * 指定目标事件 参数的处理
+ * @param {String} unit 指定目标事件的参数
+ * @returns 事件ID
+ */
+Kgg_MapArrows.Interpreter.targetEventId = function (unit) {
+    var e_id;
+    if (unit.indexOf("事件[") != -1) {
+        unit = unit.replace("事件[", "");
+        unit = unit.replace("]", "");
+        e_id = Number(unit);
+    }
+    if (unit.indexOf("事件变量[") != -1) {
+        unit = unit.replace("事件变量[", "");
+        unit = unit.replace("]", "");
+        e_id = $gameVariables.value(Number(unit));
+    }
+    return e_id;
+};
+
+/**
+ * 指定目标位置 参数的处理
+ * @param {String} unit 指定目标位置的参数
+ * @returns 目标在地图上的坐标
+ */
+Kgg_MapArrows.Interpreter.targetPoint = function (unit) {
+    unit = String(unit);
+    var targetPoint = { x: 0, y: 0 };
+    if (unit.indexOf("位置[") != -1) {
+        unit = unit.replace("位置[", "");
+        unit = unit.replace("]", "");
+        var pos = unit.split(/[,，]/);
+        if (pos.length >= 2) {
+            targetPoint.x = Number(pos[0]);
+            targetPoint.y = Number(pos[1]);
+        }
+    } else if (unit.indexOf("位置变量[") != -1) {
+        unit = unit.replace("位置变量[", "");
+        unit = unit.replace("]", "");
+        var pos = unit.split(/[,，]/);
+        if (pos.length >= 2) {
+            targetPoint.x = $gameVariables.value(Number(pos[0]));
+            targetPoint.y = $gameVariables.value(Number(pos[1]));
+        }
+    } else {
+        targetPoint = undefined;
+    }
+    return targetPoint;
+};
+
+// 指定地图的参数的处理，返回地图id
+Kgg_MapArrows.Interpreter.mapId = function (mapIdUnit) {
+    var mapId = $gameMap.mapId();
+    if (!!mapIdUnit) {
+        if (mapIdUnit.indexOf("地图[") != -1) {
+            mapId = Number(mapIdUnit.replace("地图[", "").replace("]", ""));
+        } else if (mapIdUnit.indexOf("地图变量[") != -1) {
+            mapId = $gameVariables.value(Number(mapIdUnit.replace("地图变量[", "").replace("]", "")));
+        }
+    }
+    return mapId;
+};
+
 
 // 重写pluginCommand
 Kgg_MapArrows.Interpreter.pluginCommand = Game_Interpreter.prototype.pluginCommand;
@@ -1359,7 +1655,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
 
     if (command == ">地图箭头") {
         // 双数位置是冒号“:”，例如args[0]，args[2]等。
-        if (args.length == 4) {
+        if (args.length == 4 || args.length == 6) {
             var type = String(args[1]);
             var name = String(args[3]);
             if (type == "移除箭头") {
@@ -1367,6 +1663,37 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
             if (type == "按样式清除箭头") {
                 Kgg_MapArrows.clearArrowsByArrowStyle(name);
+            }
+            if (type == "按关键词清除箭头") {
+                Kgg_MapArrows.clearArrowsByKeyword(name);
+            }
+            if (type == "清除快捷箭头") {
+                Kgg_MapArrows.clearFastArrows(name);
+            }
+            if (type == "清除全部箭头") {
+                Kgg_MapArrows.clearAllArrows();
+            }
+            // 目标事件或位置处理
+            var unit = String(args[3]);
+            // 地图编号处理
+            var mapId = $gameMap.mapId();
+            if (args.length == 6) {
+                mapId = Kgg_MapArrows.Interpreter.mapId(args[5]);
+            }
+            if (type == "快捷添加") {
+                switch (Kgg_MapArrows.Interpreter.targetType(unit)) {
+                    case Kgg_MapArrows.TargetType.EVENT_ID:
+                        var e_id = Kgg_MapArrows.Interpreter.targetEventId(unit);
+                        Kgg_MapArrows.addArrowToEventFast(e_id, mapId);
+                        break;
+                    case Kgg_MapArrows.TargetType.MAP_POINT:
+                        var location = Kgg_MapArrows.Interpreter.targetPoint(unit);
+                        Kgg_MapArrows.addArrowToLocationFast(location.x, location.y, mapId);
+                        break;
+                    default:
+                        console.warn(`Kgg_MapArrows: ${unit} 不是有效的目标。`);
+                        break;
+                }
             }
         }
         if (args.length == 8 || args.length == 10) {
@@ -1377,62 +1704,45 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             // 地图编号处理
             var mapId = $gameMap.mapId();
             if (args.length == 10) {
-                if (args[9].indexOf("地图[") != -1) {
-                    mapId = Number(args[9].replace("地图[", "").replace("]", ""));
-                } else if (args[9].indexOf("地图变量[") != -1) {
-                    mapId = $gameVariables.value(Number(args[9].replace("地图变量[", "").replace("]", "")));
-                }
+                mapId = Kgg_MapArrows.Interpreter.mapId(args[9]);
             }
             // 判断指令类型
             if (type == "添加箭头") {
-                if (unit.indexOf("事件[") != -1) {
-                    unit = unit.replace("事件[", "");
-                    unit = unit.replace("]", "");
-                    var e_id = Number(unit);
-                    Kgg_MapArrows.addArrowToEvent(name, style, e_id, mapId);
-                }
-                if (unit.indexOf("事件变量[") != -1) {
-                    unit = unit.replace("事件变量[", "");
-                    unit = unit.replace("]", "");
-                    var e_id = $gameVariables.value(Number(unit));
-                    Kgg_MapArrows.addArrowToEvent(name, style, e_id, mapId);
-                }
-                if (unit.indexOf("位置[") != -1) {
-                    unit = unit.replace("位置[", "");
-                    unit = unit.replace("]", "");
-                    var pos = unit.split(/[,，]/);
-                    if (pos.length >= 2) {
-                        var x = Number(pos[0]);
-                        var y = Number(pos[1]);
-                        Kgg_MapArrows.addArrowToLocation(name, style, x, y, mapId);
-                    }
-                }
-                if (unit.indexOf("位置变量[") != -1) {
-                    unit = unit.replace("位置变量[", "");
-                    unit = unit.replace("]", "");
-                    var pos = unit.split(/[,，]/);
-                    if (pos.length >= 2) {
-                        var x = $gameVariables.value(Number(pos[0]));
-                        var y = $gameVariables.value(Number(pos[1]));
-                        Kgg_MapArrows.addArrowToLocation(name, style, x, y, mapId);
-                    }
+                switch (Kgg_MapArrows.Interpreter.targetType(unit)) {
+                    case Kgg_MapArrows.TargetType.EVENT_ID:
+                        var e_id = Kgg_MapArrows.Interpreter.targetEventId(unit);
+                        Kgg_MapArrows.addArrowToEvent(name, style, e_id, mapId);
+                        break;
+                    case Kgg_MapArrows.TargetType.MAP_POINT:
+                        var location = Kgg_MapArrows.Interpreter.targetPoint(unit);
+                        Kgg_MapArrows.addArrowToLocation(name, style, location.x, location.y, mapId);
+                        break;
+                    default:
+                        console.warn(`Kgg_MapArrows: ${unit} 不是有效的目标。`);
+                        break;
                 }
             }
         }
     }
 };
 
-
 // =================================================================
 // 进入游戏时立即处理
 // =================================================================
 // 读取插件设置的ArrowStyle，写入键值对。
-// 显示边界线设置
+
+// 调试设置
 Kgg_MapArrows.Screen.displayBorder = Boolean(Kgg_MapArrows.parameters["显示边界线"] == "true");
+
+// 快捷添加设置
+Kgg_MapArrows.FastAdd.defaultStyleOrdinal = Number(Kgg_MapArrows.parameters["快捷添加默认样式"] || 1);
+
 // 起点设置
 // Kgg_MapArrows.StartingPoint.type = String(Kgg_MapArrows.parameters["起点类型"] || "screen_center");
 // Kgg_MapArrows.StartingPoint.x = Number(Kgg_MapArrows.parameters["起点X"] || 0.5);
 // Kgg_MapArrows.StartingPoint.y = Number(Kgg_MapArrows.parameters["起点Y"] || 0.5);
+// Kgg：20231119 起点设置包含在每个arrowStyle当中，不再单独设置一个全局的起点。
+
 // 箭头样式设置
 for (var i = 0; i < Kgg_MapArrows.arrowStyleList.length; i++) {
     if (Kgg_MapArrows.parameters["箭头-" + String(i + 1)] != undefined &&
@@ -1467,7 +1777,7 @@ for (var i = 0; i < Kgg_MapArrows.arrowStyleList.length; i++) {
             Number(arrowStyleData["右界(rightBound)"] || 0),            // rightBound 右界（number）相对原点的偏移量
 
             Number(arrowStyleData["箭头与事件最近距离"] || 30),         // arrowEventDistance 箭头与事件最近距离（number）
-            Number(arrowStyleData["混合模式"] || 30)                    // blendMode 混合模式（0 1 2 3）
+            Number(arrowStyleData["混合模式"] || 0)                    // blendMode 混合模式（0 1 2 3）
         );
         Kgg_MapArrows.arrowStyleList[i] = arrowStyle;
     }
