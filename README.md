@@ -1,8 +1,9 @@
 # 【RPGMV插件】地图箭头MapArrows 指向目标位置/事件
 
+![=>](./README/Kgg_Arrow2.png "箭头")
 Tags：UI 指引 引导 标记
 
-## 功能
+ ## 功能
 
 　　本插件为RPG游戏的地图场景边缘显示一个或多个箭头，箭头在预先设定好的边框上移动，指向指定的事件或坐标。
 
@@ -36,11 +37,17 @@ Tags：UI 指引 引导 标记
 
 ## 下载
 
-　　下载 release/Kgg_MapArrows_Demo.zip
+　　在 [releases](https://github.com/KggFromChina/Kgg_MapArrows_Demo/releases) 中下载最新版本的压缩包。名称含有“full”的压缩包是完整工程，解压即用；不含“full”的需要覆盖到新工程。
 
-　　用法：新建工程，将下载的压缩包内的文件复制到工程中进行替换。替换时，对文件夹选“合并”而不是“替换”。
+　　Demo使用方法：
 
-　　请勿使用 demo/js/plugins/Kgg_MapArrows.js ，因为它还未写完。 demo/ 里的东西是方便我自己换地方写代码用的，请勿直接使用。
+　　下载 Kgg_MapArrows_Demo_vX.X.zip ，新建工程，将下载的压缩包内的文件复制到工程中进行替换。替换时，对文件夹选“合并”而不是“替换”，然后用 RMMV 打开 Game.rpgproject 。
+
+　　或者下载 Kgg_MapArrows_Demo_vX.X_full.zip ，解压，然后用 RMMV 打开 Game.rpgproject 。
+
+　　不建议使用 demo/ 中的插件，因为它还未写完。 demo/ 里的东西是方便我自己换地方写代码用的，不适合直接使用。
+
+　　如果一定要使用 demo/ 中的内容，您可以克隆此仓库，然后将新建工程复制到 demo/ 进行替换。替换时，对文件夹选“合并”而不是“替换”，对同名文件选“跳过”。
 
 ## 注意事项
 
@@ -60,8 +67,8 @@ Tags：UI 指引 引导 标记
 
 ## 截图
 
-![本地路径](./README/地图箭头插件3.png "demo_野外")
+![demo_野外截图](./README/地图箭头插件3.png "demo_野外")
 
-![本地路径](./README/地图箭头插件2.png "demo_旅馆")
+![demo_旅馆截图](./README/地图箭头插件2.png "demo_旅馆")
 
-![本地路径](./README/地图箭头插件1.png "插件设置")
+![插件设置截图](./README/地图箭头插件1.png "插件设置")

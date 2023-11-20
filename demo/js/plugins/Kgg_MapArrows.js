@@ -77,6 +77,9 @@
  * >地图箭头 : 移除箭头 : 名称
  * 说明：
  * 移除指定名称的箭头。
+ * 举例：
+ * 移除名叫“张三”的箭头。
+ * >地图箭头 : 移除箭头 : 张三
  * ----------------------------------------------------------
  * 功能：按样式清除箭头
  * 插件指令：
@@ -167,7 +170,8 @@
  * 仅在RMMV1.6.3版本进行过测试。
  * 更新记录：
  * 2023.11.12 v1.0 完成demo，做成可以发布的版本。
- * 未完成 v1.1
+ * 2023.11.21 v1.1 增加快捷添加功能；将起点设置移到样式内；完善
+ * 清除箭头的方法；修复已知bug。
  * 插件影响范围：
  * 重写了多个自带函数，它们属于以下3个类。
  * Scene_Map Game_System Game_Interpreter
@@ -191,7 +195,7 @@
  * 
  * @param 快捷添加默认样式
  * @parent 快捷添加设置
- * @desc 选择某个样式作为快捷添加的默认样式。填写样式编号（整数）。
+ * @desc 选择某个样式作为快捷添加的默认样式。填写样式编号（1-20整数）。
  * @default 1
  * 
  * @param 箭头样式设置
@@ -355,12 +359,12 @@
  * 
  * @param 锚点X
  * @parent 图像设置
- * @desc 箭头图像锚点在X方向上相对锚点原点偏移的距离。若在0-1之间则为比例，若大于1则视为像素数。
+ * @desc 箭头图像锚点在X方向上相对锚点原点偏移的距离。若在0~1之间则为图像宽度比例，若大于1则为像素数。
  * @default 0.8
  *
  * @param 锚点Y
  * @parent 图像设置
- * @desc 箭头图像锚点在Y方向上相对锚点原点偏移的距离。若在0-1之间则为比例，若大于1则视为像素数。
+ * @desc 箭头图像锚点在Y方向上相对锚点原点偏移的距离。若在0~1之间则为图像高度比例，若大于1则为像素数。
  * @default 0.5
  *
  * @param 混合模式
@@ -392,18 +396,18 @@
  * @value player_screen_position
  * @option 左上角(top_left)
  * @value top_left
- * @desc 选择箭头方向的起点的位置。只有选择“左上角”时，下面设置的XY坐标才会生效。
+ * @desc 选择箭头方向的起点的位置。
  * @default screen_center
  * 
  * @param 起点X
  * @parent 起点设置
- * @desc 起点与屏幕左上角的X方向距离。若0-1之间为比例，大于1则为像素数。起点类型选择“左上角”时才生效。
- * @default 0.5
+ * @desc 起点与起点原点的X方向额外偏移的距离。若-1~1之间为屏幕宽度比例，绝对值大于1则为像素数。
+ * @default 0
  * 
  * @param 起点Y
  * @parent 起点设置
- * @desc 起点与屏幕左上角的Y方向距离。若0-1之间为比例，大于1则为像素数。起点类型选择“左上角”时才生效。
- * @default 0.5
+ * @desc 起点与起点原点的Y方向额外偏移的距离。若-1~1之间为屏幕高度比例，绝对值大于1则为像素数。
+ * @default 0
  * 
  * 
  * @param 边框设置
@@ -433,22 +437,22 @@
  * 
  * @param 上界(topBound)
  * @parent 边框设置
- * @desc 矩形边框上边与原点的距离。若在0-1之间则为比例，若大于1则视为像素数。
+ * @desc 矩形边框上边与原点的距离。若在0~1之间则为屏幕高度比例，若大于1则为像素数。
  * @default 30
  * 
  * @param 下界(bottomBound)
  * @parent 边框设置
- * @desc 矩形边框下边与原点的距离。若在0-1之间则为比例，若大于1则视为像素数。
+ * @desc 矩形边框下边与原点的距离。若在0~1之间则为屏幕高度比例，若大于1则为像素数。
  * @default 30
  * 
  * @param 左界(leftBound)
  * @parent 边框设置
- * @desc 矩形边框左边与原点的距离。若在0-1之间则为比例，若大于1则视为像素数。
+ * @desc 矩形边框左边与原点的距离。若在0~1之间则为屏幕宽度比例，若大于1则为像素数。
  * @default 30
  * 
  * @param 右界(rightBound)
  * @parent 边框设置
- * @desc 矩形边框右边与原点的距离。若在0-1之间则为比例，若大于1则视为像素数。
+ * @desc 矩形边框右边与原点的距离。若在0~1之间则为屏幕宽度比例，若大于1则为像素数。
  * @default 30
  * 
  * 
@@ -519,7 +523,7 @@ Kgg_MapArrows.StartingPointType = {
 Kgg_MapArrows.TargetType = {
     EVENT_ID: "event_id", // 边框中心
     MAP_POINT: "map_point", // 屏幕中心
-    SCREEN_POINT: "screen_point" // 玩家位置
+    SCREEN_POINT: "screen_point" // 屏幕位置
 };
 
 /**
@@ -619,7 +623,11 @@ Kgg_MapArrows.Target.prototype.initScreenPoint = function (mapId, x, y) {
     this._screenX = x;
     this._screenY = y;
 };
-// 静态方法：取当前屏幕坐标
+/**
+ * 取目标点当前在屏幕上的坐标
+ * @param {*} target 已初始化的目标点
+ * @returns 坐标XY {x: x, y: y}
+ */
 Kgg_MapArrows.Target.getXY = function (target) {
     return { x: target.x(), y: target.y() };
     // switch (target.type) {
@@ -661,7 +669,7 @@ Kgg_MapArrows.ActiveArrow.prototype.initialize = function (savedArrow) {
     this.arrowStyle = Kgg_MapArrows.arrowStyle(savedArrow.arrowStyleName);
     this.target = savedArrow.target;
 };
-
+// 为活动箭头设置Sprite
 Kgg_MapArrows.ActiveArrow.prototype.setSprite = function (sprite) {
     this.sprite = sprite;
 };
@@ -674,14 +682,15 @@ Kgg_MapArrows.SavedArrow = function () {
     this.arrowStyleName = "";   // 箭头样式名称
     this.target = null;         // 目标 {Kgg_MapArrows.Target}
 };
-
+// 初始化保存的箭头
 Kgg_MapArrows.SavedArrow.prototype.initialize = function (arrowStyleName, target) {
     this.arrowStyleName = arrowStyleName;
     this.target = target;
 };
 
 // =================================================================
-// 业务逻辑相关
+// 接口相关
+// 其他插件如果需要与Kgg_MapArrows交互，建议使用以下这些函数。
 // =================================================================
 
 // $gameTemp._kgg_MapArrows_activeArrowMap 存放活动的箭头
@@ -753,7 +762,7 @@ Kgg_MapArrows.addArrowToLocationFast = function (mapX, mapY, mapId) {
     var name = Kgg_MapArrows.FastAdd.FAST_ADD_NAME_PREFIX;
     var ordinal = 0;
     while (Kgg_MapArrows.arrowExist(name + ordinal.toString())) {
-        ordinal += 1;
+        ordinal += 1; // 如果名称冲突，就继续累加，直到找到不冲突的名称。
     }
     name = name + ordinal.toString();
     // 选择默认箭头
@@ -898,36 +907,44 @@ Kgg_MapArrows.StartingPoint = {};
  * @returns 起点在屏幕上的位置
  */
 Kgg_MapArrows.StartingPoint.screenPoint = function (arrowStyle) {
+    // 分类讨论
+    var screenPoint = { x: 0, y: 0 };
     switch (arrowStyle.startingPointType) {
         case Kgg_MapArrows.StartingPointType.BORDER_CENTER: // 边界中心
             if (arrowStyle.borderType == Kgg_MapArrows.BorderType.ELLIPSE) {
-                return {    // 椭圆中心
+                screenPoint = {    // 椭圆中心
                     x: arrowStyle.border.centerX,
                     y: arrowStyle.border.centerY
                 };
             } else {
-                return {    // 矩形中心
+                screenPoint = {    // 矩形中心
                     x: arrowStyle.border.x + arrowStyle.border.width / 2,
                     y: arrowStyle.border.y + arrowStyle.border.height / 2
                 };
             }
+            break;
         case Kgg_MapArrows.StartingPointType.SCREEN_CENTER: // 画面中心
-            return { x: Graphics.width / 2, y: Graphics.height / 2 };
+            screenPoint=  { x: Graphics.width / 2, y: Graphics.height / 2 };
+            break;
         case Kgg_MapArrows.StartingPointType.PLAYER_SCREEN_POSITION: // 玩家位置
             if (!!$gamePlayer) {
-                return { 
-                    x: $gamePlayer.screenX(), 
+                screenPoint = {
+                    x: $gamePlayer.screenX(),
                     y: Kgg_MapArrows.Screen.correctedTargetY($gamePlayer.screenY())
                 };
+                break;
             }
         // 注意，这里不break。如果$gamePlayer不存在，就继续往下运行，取左上角像素位置。
         case Kgg_MapArrows.StartingPointType.TOP_LEFT:
+            break;
         default:
-            var x = arrowStyle.startingPoint.x, y = arrowStyle.startingPoint.y;
-            x = (this.x > 0 && this.x < 1) ? Graphics.width * this.x : this.x;
-            y = (this.y > 0 && this.y < 1) ? Graphics.height * this.y : this.y;
-            return { x: x, y: y }; // 以左上角为原点的像素位置
+            break;
     }
+    // 额外偏移量
+    var x = arrowStyle.startingPoint.x, y = arrowStyle.startingPoint.y;
+    screenPoint.x += (x > -1 && x < 1) ? Graphics.width * x : x;
+    screenPoint.y += (y > -1 && y < 1) ? Graphics.height * y : y;
+    return screenPoint;
 };
 
 // =================================================================
@@ -1233,7 +1250,6 @@ Kgg_MapArrows.Screen.updatePosition = function (activeArrow) {
             pointF = Kgg_MapArrows.Caculation.getPointOnRay(pointB, pointA, arrowEventDistance);
         }
     }
-
     // 设置箭头Sprite的位置
     activeArrow.sprite.position.set(pointF.x, pointF.y);
 };
@@ -1490,7 +1506,12 @@ Kgg_MapArrows.Caculation.getAngle = function (x1, y1, x2, y2) {
 // =================================================================
 Kgg_MapArrows.FastAdd = {};
 Kgg_MapArrows.FastAdd.defaultStyleOrdinal = 1;
-Kgg_MapArrows.FastAdd.FAST_ADD_NAME_PREFIX = "fast_arrow_";    // 快捷添加箭头名称前缀
+/**
+ * 快捷添加箭头名称前缀
+ * 插件指令的空格是参数分隔符，插件指令添加的箭头名称不可能有空格。
+ * 快捷箭头名称的前缀中包含空格，可以保证区别于用户用插件指令添加的箭头。
+ */
+Kgg_MapArrows.FastAdd.FAST_ADD_NAME_PREFIX = "fast_arrow: ";
 
 // =================================================================
 // 插件指令相关
@@ -1655,6 +1676,15 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
 
     if (command == ">地图箭头") {
         // 双数位置是冒号“:”，例如args[0]，args[2]等。
+        if (args.length == 2) {
+            var type = String(args[1]);
+            if (type == "清除快捷箭头") {
+                Kgg_MapArrows.clearFastArrows();
+            }
+            if (type == "清除全部箭头") {
+                Kgg_MapArrows.clearAllArrows();
+            }
+        }
         if (args.length == 4 || args.length == 6) {
             var type = String(args[1]);
             var name = String(args[3]);
@@ -1666,12 +1696,6 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
             if (type == "按关键词清除箭头") {
                 Kgg_MapArrows.clearArrowsByKeyword(name);
-            }
-            if (type == "清除快捷箭头") {
-                Kgg_MapArrows.clearFastArrows(name);
-            }
-            if (type == "清除全部箭头") {
-                Kgg_MapArrows.clearAllArrows();
             }
             // 目标事件或位置处理
             var unit = String(args[3]);
@@ -1761,8 +1785,8 @@ for (var i = 0; i < Kgg_MapArrows.arrowStyleList.length; i++) {
 
             String(arrowStyleData["起点类型(StartingPointType)"]
                 || Kgg_MapArrows.StartingPointType.SCREEN_CENTER),      // startingPointType 起点类型
-            Number(arrowStyleData["起点X"] || 0.5),                     // startingPointX 起点（XY坐标偏移量）
-            Number(arrowStyleData["起点Y"] || 0.5),                     // startingPointY
+            Number(arrowStyleData["起点X"] || 0),                       // startingPointX 起点（XY坐标偏移量）
+            Number(arrowStyleData["起点Y"] || 0),                       // startingPointY
 
             Number(arrowStyleData["渐变最远距离"] || 300),              // gradientMaxDistance 渐变最远距离（number）
             Number(arrowStyleData["渐变最近距离"] || 150),              // gradientMinDistance 渐变最近距离（number）
