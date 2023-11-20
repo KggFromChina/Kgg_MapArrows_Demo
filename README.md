@@ -1,6 +1,6 @@
 # 【RMMV插件】地图箭头MapArrows 指向目标位置/事件
 
-![=>](./README/Kgg_Arrow2.png "箭头")[Project1发布页](https://rpg.blue/thread-494806-1-1.html "进入Project1论坛的本插件的发布页")
+![=>](./README/Kgg_Arrow2.png "箭头")[【Project1】](https://rpg.blue/thread-494806-1-1.html "进入Project1论坛的本插件的发布页")
 
 ## 功能
 
@@ -58,13 +58,13 @@
 
 ## 使用许可
 
-Kgg_MapArrows.js
+- Kgg_MapArrows.js
 
 　　可免费商用，可修改，无需报告。
 
 　　以上未提及的事项，参考MIT License。
 
-Kgg_Arrow2.png
+- Kgg_Arrow2.png
 
 　　原创素材，可免费商用，可修改，无需报告。
 
