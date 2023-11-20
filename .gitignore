@@ -13,6 +13,7 @@ demo/img/system/GameOver.png
 demo/img/system/IconSet.png
 demo/img/system/Loading.png
 demo/img/system/Shadow1.png
+demo/img/system/Shadow2.png
 demo/img/faces/
 demo/img/characters/
 demo/img/animations/
@@ -29,6 +30,6 @@ demo/js/rpg_objects.js
 demo/js/rpg_scenes.js
 demo/js/rpg_sprites.js
 demo/js/rpg_windows.js
-demo/js/plugins/Community_Basic.json
+demo/js/plugins/Community_Basic.js
 release/
 output/
