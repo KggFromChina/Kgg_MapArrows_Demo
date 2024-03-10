@@ -2,7 +2,7 @@
 // Kgg_MapArrows.js
 //=====================================================================================
 /*:
- * @plugindesc v1.1 地图箭头 MapArrows
+ * @plugindesc v1.2 地图箭头 MapArrows
  * @author 开关关
  *
  * @help 
@@ -172,11 +172,13 @@
  * 2023.11.12 v1.0 完成demo，做成可以发布的版本。
  * 2023.11.21 v1.1 增加快捷添加功能；将起点设置移到样式内；完善
  * 清除箭头的方法；修复已知bug。
+ * 2024.3.10  v1.2 修复读档时报错x is not a function的问题。
+ * 
  * 插件影响范围：
- * 重写了多个自带函数，它们属于以下3个类。
+ * 重写了几个RM原版的函数，它们属于以下3个类：
  * Scene_Map Game_System Game_Interpreter
- * 本插件影响存档文件，因为有给$gameSystem添加成员。所有写入的
- * 对象名都有前缀“_kgg_MapArrows”。
+ * 本插件影响存档文件，因为有给$gameSystem添加成员。所有本插件
+ * 给$gameSystem添加的成员变量名称都有前缀“_kgg_MapArrows”。
  * ==========================================================
  * 
  * @param 调试设置
@@ -573,6 +575,15 @@ Kgg_MapArrows.Target = function () {
     this._screenX = 0;
     this._screenY = 0;
 };
+Kgg_MapArrows.Target.prototype.initBySavedTarget = function (target) {
+    this.type = target.type;
+    this.mapId = target.mapId;
+    this.eventId = target.eventId;
+    this._mapX = target._mapX;
+    this._mapY = target._mapY;
+    this._screenX = target._screenX;
+    this._screenY = target._screenY;
+};
 // 当前屏幕坐标x
 Kgg_MapArrows.Target.prototype.x = function () {
     switch (this.type) {
@@ -625,34 +636,13 @@ Kgg_MapArrows.Target.prototype.initScreenPoint = function (mapId, x, y) {
 };
 /**
  * 取目标点当前在屏幕上的坐标
- * @param {*} target 已初始化的目标点
+ * @param {Kgg_MapArrows.Target} target 已初始化的目标点
  * @returns 坐标XY {x: x, y: y}
  */
 Kgg_MapArrows.Target.getXY = function (target) {
+    console.log(target);
+    // console.log(target.x);
     return { x: target.x(), y: target.y() };
-    // switch (target.type) {
-    //     case "EventId":
-    //         return {
-    //             x: $gameMap.event(target.eventId).screenX(),
-    //             y: Kgg_MapArrows.Screen.correctedTargetY($gameMap.event(target.eventId).screenY())
-    //         };
-    //     case "MapPoint": // 照抄Game_CharacterBase.prototype.screenX
-    //         var tw = $gameMap.tileWidth();
-    //         var scrolledX = $gameMap.adjustX(target._mapX);
-    //         var th = $gameMap.tileHeight();
-    //         var scrolledY = $gameMap.adjustY(target._mapY);
-    //         return {
-    //             x: Math.round(scrolledX * tw + tw / 2),
-    //             y: Math.round(scrolledY * th + th / 2)
-    //         };
-    //     case "ScreenPoint":
-    //         return {
-    //             x: target._screenX,
-    //             y: target._screenY
-    //         };
-    //     default:
-    //         return;
-    // }
 };
 
 
@@ -667,7 +657,8 @@ Kgg_MapArrows.ActiveArrow = function () {
 // 依据SavedArrow初始化ActiveArrow
 Kgg_MapArrows.ActiveArrow.prototype.initialize = function (savedArrow) {
     this.arrowStyle = Kgg_MapArrows.arrowStyle(savedArrow.arrowStyleName);
-    this.target = savedArrow.target;
+    this.target = new Kgg_MapArrows.Target();
+    this.target.initBySavedTarget(savedArrow.target);
 };
 // 为活动箭头设置Sprite
 Kgg_MapArrows.ActiveArrow.prototype.setSprite = function (sprite) {
@@ -1219,7 +1210,6 @@ Kgg_MapArrows.Screen.updatePosition = function (activeArrow) {
     var border = activeArrow.arrowStyle.border;
     var pointA = Kgg_MapArrows.StartingPoint.screenPoint(activeArrow.arrowStyle);
     var pointB = Kgg_MapArrows.Target.getXY(activeArrow.target);
-    // console.log(pointB);
     var pointC = { x: 0, y: 0 };
     var pointF = { x: -7777, y: -7777 };
     var pointBInsideBorder;
@@ -1277,7 +1267,6 @@ Kgg_MapArrows.Screen.updateAlpha = function (activeArrow) {
 
 // 刷新所有箭头（位置、旋转、透明度）
 Kgg_MapArrows.Screen.updateAllArrow = function () {
-    // console.log('Kgg_MapArrows.Screen.updateAllArrow');
     this.updateArrowLayerOpacity();
     for (var key in $gameTemp._kgg_MapArrows_activeArrowMap) {
         var o = $gameTemp._kgg_MapArrows_activeArrowMap[key];
