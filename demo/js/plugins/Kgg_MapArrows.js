@@ -640,8 +640,6 @@ Kgg_MapArrows.Target.prototype.initScreenPoint = function (mapId, x, y) {
  * @returns 坐标XY {x: x, y: y}
  */
 Kgg_MapArrows.Target.getXY = function (target) {
-    console.log(target);
-    // console.log(target.x);
     return { x: target.x(), y: target.y() };
 };
 
