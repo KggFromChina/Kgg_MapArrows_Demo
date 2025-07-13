@@ -4,6 +4,10 @@
 /*:
  * @plugindesc v1.3 地图箭头 MapArrows
  * @author 开关关
+ * 
+ * @Drill_LE_param "箭头-%d"
+ * @Drill_LE_parentKey "---箭头样式组%d至%d---"
+ * @Drill_LE_var "Kgg_MapArrows.arrowStyleList.length"
  *
  * @help 
  * ==========================================================
@@ -19,6 +23,9 @@
  * 注意事项：
  * 1.箭头图像文件请放置在img/system/文件夹
  * 2.箭头图像中箭头朝右
+ * 3.支持使用 Drill_up 的插件最大值编辑器（DrillLengthEditor）
+ * 修改箭头样式数量的最大值。
+ * 获取链接：https://rpg.blue/thread-409713-1-1.html
  * 
  * 使用许可：
  * 可免费商用，可修改，无需报告。
@@ -27,6 +34,10 @@
  * 感谢：
  * 此插件是拜读Drill_up的插件教程写出来的，感谢Drill_up大佬！
  * 感谢honmarei指出问题。
+ * 
+ * 发布链接：
+ * https://rpg.blue/thread-494806-1-1.html
+ * https://github.com/KggFromChina/Kgg_MapArrows_Demo/
  * ==========================================================
  * 插件指令
  * ==========================================================
@@ -173,6 +184,8 @@
  * 2023.11.21 v1.1 增加快捷添加功能；将起点设置移到样式内；完善
  * 清除箭头的方法；修复已知bug。
  * 2024.3.10  v1.2 修复读档时报错x is not a function的问题。
+ * 2025.7.13  v1.3 增加对插件最大值编辑器(DrillLengthEditor)的
+ * 支持；修复箭头是否可旋转(canRotate)无法设置为false的问题。
  * 
  * 插件影响范围：
  * 重写了几个RM原版的函数，它们属于以下3个类：
@@ -197,131 +210,132 @@
  * 
  * @param 快捷添加默认样式
  * @parent 快捷添加设置
- * @desc 选择某个样式作为快捷添加的默认样式。填写样式编号（1-20整数）。
+ * @desc 选择某个样式作为快捷添加的默认样式。填写样式编号（整数）。
  * @default 1
  * 
- * @param 箭头样式设置
- * @default
- *
+ * @param ---箭头样式组 1至20---
+ * @desc
+ * 
  * @param 箭头-1
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
  * @default 
- *
+ * 
  * @param 箭头-2
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
- * @default 
- *
+ * @default false
+ * 
  * @param 箭头-3
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
  * @default 
- *
+ * 
  * @param 箭头-4
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
- * @default 
- *
+ * @default 1
+ * 
  * @param 箭头-5
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
  * @default 
- *
+ * 
  * @param 箭头-6
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
- * @default 
- *
+ * @default false
+ * 
  * @param 箭头-7
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
  * @default 
- *
+ * 
  * @param 箭头-8
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
- * @default 
- *
+ * @default 1
+ * 
  * @param 箭头-9
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
  * @default 
- *
+ * 
  * @param 箭头-10
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
- * @default 
- *
+ * @default false
+ * 
  * @param 箭头-11
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
  * @default 
- *
+ * 
  * @param 箭头-12
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
- * @default 
- *
+ * @default 1
+ * 
  * @param 箭头-13
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
  * @default 
- *
+ * 
  * @param 箭头-14
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
- * @default 
- *
+ * @default false
+ * 
  * @param 箭头-15
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
  * @default 
- *
+ * 
  * @param 箭头-16
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
  * @default 
- *
+ * 
  * @param 箭头-17
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
  * @default 
- *
+ * 
  * @param 箭头-18
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
  * @default 
- *
+ * 
  * @param 箭头-19
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
  * @default 
- *
+ * 
  * @param 箭头-20
- * @parent 箭头样式设置
+ * @parent ---箭头样式组 1至20---
  * @type struct<MenuArrowStyle>
  * @desc 设置箭头的样式。
- * @default 
+ * @default
+ * 
  */
 /*~struct~MenuArrowStyle:
  * 
@@ -941,9 +955,7 @@ Kgg_MapArrows.StartingPoint.screenPoint = function (arrowStyle) {
 // =================================================================
 
 Kgg_MapArrows.arrowStyleList = [];          // 箭头样式列表
-Kgg_MapArrows.arrowStyleList.length = 20;   // 箭头样式列表元素数
-
-// 根据名称获取样式
+Kgg_MapArrows.arrowStyleList.length = 20;
 Kgg_MapArrows.arrowStyle = function (name) {
     return Kgg_MapArrows.arrowStyleList.find((style) => {
         return style.name == name;
@@ -1754,7 +1766,7 @@ Kgg_MapArrows.FastAdd.defaultStyleOrdinal = Number(Kgg_MapArrows.parameters["快
 // Kgg_MapArrows.StartingPoint.y = Number(Kgg_MapArrows.parameters["起点Y"] || 0.5);
 // Kgg：20231119 起点设置包含在每个arrowStyle当中，不再单独设置一个全局的起点。
 
-// 箭头样式设置
+// ---箭头样式组 1至20---
 for (var i = 0; i < Kgg_MapArrows.arrowStyleList.length; i++) {
     if (Kgg_MapArrows.parameters["箭头-" + String(i + 1)] != undefined &&
         Kgg_MapArrows.parameters["箭头-" + String(i + 1)] != "") {
