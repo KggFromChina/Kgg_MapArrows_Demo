@@ -2,7 +2,7 @@
 // Kgg_MapArrows.js
 //=====================================================================================
 /*:
- * @plugindesc v1.2 地图箭头 MapArrows
+ * @plugindesc v1.3 地图箭头 MapArrows
  * @author 开关关
  *
  * @help 
@@ -10,8 +10,8 @@
  * 简介
  * ==========================================================
  * 功能：
- * 本插件为RPG游戏的地图场景显示多个箭头，箭头在预先设定好的边框上
- * 移动，指向指定事件或坐标。
+ * 本插件为 RPG Maker MV 游戏项目的地图场景显示多个箭头，箭头在
+ * 预先设定好的边框上移动，指向指定事件或坐标。
  * 本插件提供添加、移除、按样式清除箭头的插件指令。
  * 请在插件面板中预先设置好样式，然后在游戏过程中添加。
  * 参数较多，建议下载demo参考。
@@ -1764,7 +1764,7 @@ for (var i = 0; i < Kgg_MapArrows.arrowStyleList.length; i++) {
         var arrowStyle = new Kgg_MapArrows.ArrowStyle(
             String(arrowStyleData["名称"] || "未命名"),                 // name 名称
             String(arrowStyleData["箭头图像"] || "Shadow1"),            // imagePath 图像（文件路径的string）
-            Boolean(arrowStyleData["是否可旋转"] == "true" || true),    // canRotate 是否可旋转
+            Boolean(arrowStyleData["是否可旋转"] == "true"),            // canRotate 是否可旋转
             String(arrowStyleData["锚点原点类型(AnchorOriginType)"]
                 || Kgg_MapArrows.AnchorOriginType.TOP_LEFT),            // anchorOrigin 锚点原点类型（二选一：图像中心、左上角） AnchorOriginType
             Number(arrowStyleData["锚点X"] || 0.5),                     // anchorX 锚点（XY坐标偏移量）
